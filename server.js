@@ -19,6 +19,7 @@ var FrontHost = 'http://bbs.hisegg.com';
 /**
 *cookieParser中间件
 *body中间件
+*redis
 */
 
 app.use(cookieParser());
@@ -38,7 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 /**
-*设置允许跨域*
+*设置允许跨域访问*
 */
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -135,8 +136,8 @@ app.get('/code', function(req, res) {
   *应用的秘钥
   */
   var cs = {
-    CorpID: 'wxcd0db83ccc3bab28',
-    Secret: '32scT5KoA3kAPE4cC8JEHIRlIKm5IwSBCyg7tsLl8efesBVvpABGFdJp2oAEm9AJ'
+    CorpID: '****',
+    Secret: '*********'
   }
 
 
