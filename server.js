@@ -17,7 +17,7 @@ var app = express();
 var FrontHost = 'http://bbs.hisegg.com';
 
 /**
-*cookie中间件
+*cookieParser中间件
 *body中间件
 */
 
