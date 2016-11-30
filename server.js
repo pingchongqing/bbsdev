@@ -135,8 +135,8 @@ app.get('/code', function(req, res) {
   *应用的秘钥
   */
   var cs = {
-    CorpID: 'wxcd0db83ccc3bab28',
-    Secret: '32scT5KoA3kAPE4cC8JEHIRlIKm5IwSBCyg7tsLl8efesBVvpABGFdJp2oAEm9AJ'
+    CorpID: '',
+    Secret: ''
   }
 
 
