@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var redis = require('redis');
 var RedisStore = require('connect-redis')(session);
+var rds = redis.createClient('6379', '127.0.0.1');
 
 var upload = require('./routes/upload');
 var creat = require('./routes/creat');
@@ -17,9 +18,8 @@ var app = express();
 var FrontHost = 'http://bbs.hisegg.com';
 
 /**
-*cookieParser中间件
+*cookie中间件
 *body中间件
-*redis
 */
 
 app.use(cookieParser());
@@ -39,7 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 /**
-*设置允许跨域访问*
+*设置允许跨域*
 */
 app.all('*', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -75,10 +75,9 @@ app.get('/code', function(req, res) {
   ep1.all('access_token', 'UserId', 'admin','department',function(access_token, UserId, admin, department) {
     res.cookie('ADMIN', admin, { domain:'.hisegg.com', expires: new Date(Date.now() + 900000000000) });
 
-    var rds = redis.createClient('6379', '127.0.0.1');
     rds.on("connect", function() {
       rds.set("deps", JSON.stringify(department), function (err, reply) {
-        console.log(reply);
+        //console.log(reply);
       });
     });
 
@@ -136,8 +135,8 @@ app.get('/code', function(req, res) {
   *应用的秘钥
   */
   var cs = {
-    CorpID: '****',
-    Secret: '*********'
+    CorpID: 'wxcd0db83ccc3bab28',
+    Secret: '32scT5KoA3kAPE4cC8JEHIRlIKm5IwSBCyg7tsLl8efesBVvpABGFdJp2oAEm9AJ'
   }
 
 
@@ -176,25 +175,23 @@ app.get('/user', function(req, res) {
 *Https请求方式: GET
 */
 app.post('/department', function(req, res) {
-  var rds = redis.createClient('6379', '127.0.0.1');
-  rds.on('connect',function() {
-    rds.get("deps", function(err, reply) {
-      var deps = JSON.parse(reply);
-      var ep = new eventproxy();
-      ep.all('ndp', function(ndp) {
-        deps.map(function(dep) {
-          if(dep.id == ndp.parentid) {
-            res.send(dep.name+'|'+ndp.name)
-          }
-        });
-      });
+
+  rds.get("deps", function(err, reply) {
+    var deps = JSON.parse(reply);
+    var ep = new eventproxy();
+    ep.all('ndp', function(ndp) {
       deps.map(function(dep) {
-        if(dep.id == req.body.id) {
-          ep.emit('ndp', dep);
+        if(dep.id == ndp.parentid) {
+          res.send(dep.name+'|'+ndp.name)
         }
       });
     });
-  })
+    deps.map(function(dep) {
+      if(dep.id == req.body.id) {
+        ep.emit('ndp', dep);
+      }
+    });
+  });
 
 });
 
